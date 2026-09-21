@@ -277,6 +277,35 @@ describe("OKF rebuild integration", () => {
     expect(() => readFileSync(join(paths.wiki, "concepts/nested/index.md"), "utf8")).toThrow();
   });
 
+  it("excludes OpenKnowledge metadata from projections without pruning its files", () => {
+    const paths = createVault({ knowledge_format: "okf-0.2" });
+    writeDoc(
+      paths,
+      createKnowledgeDocument("talks/real.md", { type: "talk", title: "Real talk" }, "Body."),
+    );
+    for (const folder of [".ok", "talks/.ok"]) {
+      writeDoc(
+        paths,
+        createKnowledgeDocument(
+          `${folder}/templates/talk.md`,
+          { type: "talk", title: "{Talk title}" },
+          "[Real talk](/talks/real.md)",
+        ),
+      );
+      writeFileSync(join(paths.wiki, folder, "index.md"), "metadata-owned");
+    }
+
+    expect(rebuildMetadata(paths).ok).toBe(true);
+    const registry = JSON.parse(readFileSync(join(paths.meta, "registry.json"), "utf8"));
+    expect(Object.keys(registry.pages)).toEqual(["talks/real"]);
+    const backlinks = JSON.parse(readFileSync(join(paths.meta, "backlinks.json"), "utf8"));
+    expect(backlinks["talks/real"]).toEqual([]);
+    for (const folder of ["", "talks/"]) {
+      expect(readFileSync(join(paths.wiki, folder, "index.md"), "utf8")).not.toContain(".ok");
+      expect(readFileSync(join(paths.wiki, folder, ".ok/index.md"), "utf8")).toBe("metadata-owned");
+    }
+  });
+
   it("does not prune indexes through symlinked directories", () => {
     const paths = createVault({ knowledge_format: "okf-0.2" });
     writeDoc(

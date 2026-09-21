@@ -79,6 +79,11 @@ WIKI_ROOT/
 
 `events.jsonl` records selected extension operations, not every filesystem edit. `meta/log.md` and OKF-mode `wiki/log.md` are one-way projections; neither can recover the event stream.
 
+OpenKnowledge's root and nested `.ok/` directories are metadata, not knowledge
+content. Discovery excludes their Markdown templates from registry counts,
+backlinks, and generated navigation. Index pruning also skips these directories
+so it cannot remove files owned by OpenKnowledge.
+
 ## Source Packet Format
 
 Each captured source becomes a packet:

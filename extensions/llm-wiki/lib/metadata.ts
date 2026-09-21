@@ -394,6 +394,7 @@ function pruneObsoleteIndexes(paths: VaultPaths, currentIndexes: Map<string, str
     const results: string[] = [];
     if (!existsSync(dir)) return results;
     for (const entry of readdirSync(dir)) {
+      if (entry === ".ok") continue;
       const fullPath = join(dir, entry);
       let stat: ReturnType<typeof lstatSync>;
       try {

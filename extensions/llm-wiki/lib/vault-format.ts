@@ -210,6 +210,8 @@ function collectMarkdownFiles(dir: string, wikiRoot: string): MarkdownScan {
   }
 
   for (const entry of entries) {
+    // OpenKnowledge owns this metadata tree, including reusable Markdown templates.
+    if (entry === ".ok") continue;
     const fullPath = join(dir, entry);
     try {
       const stat = lstatSync(fullPath);
