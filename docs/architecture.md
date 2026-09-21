@@ -166,3 +166,9 @@ same guardrail as source packets — no new ownership rule required.
 ## Guardrails
 
 The extension blocks direct edits to `.llm-wiki/raw/**` and `.llm-wiki/meta/**`. Metadata rebuilds automatically after `.llm-wiki/wiki/**` edits.
+
+## Open Knowledge
+OpenKnowledge's root and nested `.ok/` directories are metadata, not knowledge
+content. Discovery excludes their Markdown templates from registry counts,
+backlinks, and generated navigation. Index pruning also skips these directories
+so it cannot remove files owned by OpenKnowledge.
